@@ -9,13 +9,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author Speakjava (simon.ritter@oracle.com)
  */
 public class Lesson2 {
+
     private static final String WORD_REGEXP = "[- .:,]+";
 
     /**
@@ -54,7 +58,7 @@ public class Lesson2 {
 
     /**
      * Exercise 1
-     *
+     * <p/>
      * Create a new list with all the strings from original list converted to
      * lower case and print them out.
      */
@@ -62,12 +66,15 @@ public class Lesson2 {
         List<String> list = Arrays.asList(
                 "The", "Quick", "BROWN", "Fox", "Jumped", "Over", "The", "LAZY", "DOG");
 
-    /* YOUR CODE HERE */
+        List<String> list2 = new ArrayList<>();
+        list.stream().forEach(s -> list2.add(s.toLowerCase()));
+
+        list2.stream().forEach(System.out::println);
     }
 
     /**
      * Exercise 2
-     *
+     * <p/>
      * Modify exercise 1 so that the new list only contains strings that have an
      * odd length
      */
@@ -75,12 +82,16 @@ public class Lesson2 {
         List<String> list = Arrays.asList(
                 "The", "Quick", "BROWN", "Fox", "Jumped", "Over", "The", "LAZY", "DOG");
 
-    /* YOUR CODE HERE */
+        List<String> list2 = new ArrayList<>();
+        list.stream().filter(s -> s.length() % 2 == 0).forEach(s -> list2.add(s.toLowerCase()));
+
+        list.stream().forEach(System.out::println);
+        list2.stream().forEach(System.out::println);
     }
 
     /**
      * Exercise 3
-     *
+     * <p/>
      * Join the second, third and forth strings of the list into a single string,
      * where each word is separated by a hyphen (-). Print the resulting string.
      */
@@ -88,7 +99,10 @@ public class Lesson2 {
         List<String> list = Arrays.asList(
                 "The", "quick", "brown", "fox", "jumped", "over", "the", "lazy", "dog");
 
-    /* YOUR CODE HERE */
+        StringBuilder result = new StringBuilder();
+        IntStream.of(1, 3, 4).forEach(i -> result.append(list.get(i) + "-"));
+
+        System.out.println(result);
     }
 
     /**
@@ -97,20 +111,25 @@ public class Lesson2 {
     private void exercise4() throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("SonnetI.txt"), StandardCharsets.UTF_8)) {
-      /* YOUR CODE HERE */
+
+            System.out.println("Lines in file: " + reader.lines().count());
         }
     }
 
     /**
      * Using the BufferedReader to access the file, create a list of words with
      * no duplicates contained in the file.  Print the words.
-     *
+     * <p/>
      * HINT: A regular expression, WORD_REGEXP, is already defined for your use.
      */
     private void exercise5() throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("SonnetI.txt"), StandardCharsets.UTF_8)) {
-      /* YOUR CODE HERE */
+
+            reader.lines()
+                    .flatMap(s -> Stream.of(s.split(WORD_REGEXP)))
+                    .distinct()
+                    .forEach(System.out::println);
         }
     }
 
@@ -122,7 +141,13 @@ public class Lesson2 {
     private void exercise6() throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("SonnetI.txt"), StandardCharsets.UTF_8)) {
-      /* YOUR CODE HERE */
+
+            reader.lines()
+                    .flatMap(s -> Stream.of(s.split(WORD_REGEXP)))
+                    .distinct()
+                    .map(s -> s.toLowerCase())
+                    .sorted()
+                    .forEach(System.out::println);
         }
     }
 
@@ -132,7 +157,13 @@ public class Lesson2 {
     private void exercise7() throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("SonnetI.txt"), StandardCharsets.UTF_8)) {
-      /* YOUR CODE HERE */
+
+            reader.lines()
+                    .flatMap(s -> Stream.of(s.split(WORD_REGEXP)))
+                    .distinct()
+                    .map(s -> s.toLowerCase())
+                    .sorted((s1, s2) -> Integer.compare(s1.length(), s2.length()))
+                    .forEach(System.out::println);
         }
     }
 }
